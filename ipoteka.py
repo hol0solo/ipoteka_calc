@@ -10,7 +10,7 @@ mortgage_percentage = 8 # Кол-во процентов по ипотеке
 apartment_cost = 45_000_000 # Стоимость апартаментов
 
 
-def deposit(money_income_me: int, money_income_lisa, deadline: int, deposit_percentage: int | float,
+def deposit(money_income_me: int, money_income_lisa, deadline: int, deposit_percentage: int,
             payment_per_month: int, salary_year_gap_me: int = 100_000, salary_year_gap_lisa: int = 70_000):
     """
         Расчитывается сумма которая будет накоплена
@@ -82,3 +82,4 @@ payment_month = payment_calc()
 print(f"Ежемесячный платеж: {payment_month:,}")
 deposit_balance, savings_per_month = deposit(mine_money_income, lisa_money_income, deadline, deposit_percentage, payment_month)
 print(f"Депозит: {int(deposit_balance):,} начисления в месяц: {int(savings_per_month):,}")
+
