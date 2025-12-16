@@ -1,3 +1,10 @@
+normal_money_behavior = {
+    700_000: 400_000,
+    1_000_000: 650_000,
+    1_300_000: 900_000,
+    1_500_000: 1_100_000,
+} # Словарь где ключ это зп а значение это сколько я могу откладывать
+
 mine_salary_gap = [700_000, 1_000_000, 1_300_000, 1_500_000] # Зарплата за 2026, 2027, 2028, 2029
 lisa_salary_gap = [150_000, 300_000, 500_000, 700_000] # Зарплата за 2026, 2027, 2028, 2029
 mine_money_income = 400_000 # сколько денег я вкладываю в 1-й год
@@ -7,18 +14,18 @@ down_payment = 20 # Первоначальный взнос в процента�
 deposit_percentage = 20 # Процент депозита
 mortgage_years = 20 # Кол-во лет по ипотеке
 mortgage_percentage = 8 # Кол-во процентов по ипотеке
-apartment_cost = 45_000_000 # Стоимость апартаментов
+apartment_cost = 40_000_000 # Стоимость апартаментов
 
 
 def deposit(money_income_me: int, money_income_lisa, deadline: int, deposit_percentage: int,
-            payment_per_month: int, salary_year_gap_me: int = 100_000, salary_year_gap_lisa: int = 70_000):
+            payment_per_month: int, salary_year_gap_me: int = 0, salary_year_gap_lisa: int = 70_000):
     """
         Расчитывается сумма которая будет накоплена
         если откладывать сумму денег money_income
         в течении deadline лет, по проценту ипотеки deposit_percentage
         с ежемесячным платежом
     """
-    deposit_balance = 4_000_000
+    deposit_balance = 2_000_000
     success_count = False
     needed_money_count = False
 
@@ -31,8 +38,12 @@ def deposit(money_income_me: int, money_income_lisa, deadline: int, deposit_perc
 
     income_money = money_income_me + money_income_lisa
     for year in range(deadline):
-        for month in months:
-            if deposit_balance >= needed_money and needed_money_count is False and year > 0:
+        if year == 0:
+            new_months = months[2:]
+        else:
+            new_months = months
+        for month in new_months:
+            if deposit_balance >= needed_money and needed_money_count is False and year >= 1:
                 print("\n", "$" * 30, "Заработали на первоначалку", "$" * 30, "\n")
                 deposit_balance -= needed_money
                 needed_money_count = True
@@ -40,12 +51,12 @@ def deposit(money_income_me: int, money_income_lisa, deadline: int, deposit_perc
             deposit_balance += income_money
             savings = deposit_percentage / 12 * deposit_balance / 100
 
-            if savings >= payment_per_month and success_count is False:
+            if savings >= payment_per_month and needed_money_count is True and success_count is False:
                 print("\n", "-" * 30, "ДЕПОЗИТ ПОКРЫВАЕТ ИПОТЕКУ", "-" * 30, "\n")
                 success_count = True
 
             deposit_balance += savings
-            financial_burden = int(money_income_me + payment_per_month) if needed_money_count \
+            financial_burden = int(money_income_me + payment_per_month) if needed_money_count and not success_count \
                 else money_income_me
 
             free_money_me = mine_salary_gap[year] - financial_burden
